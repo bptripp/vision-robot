@@ -1,0 +1,23 @@
+Related head for active sensing: 
+
+http://aplab.bu.edu/research/biorobotics.html
+
+Also Triesch & Shi: 
+[1] A Unified Model of the Joint Development of Disparity Selectivity and Vergence Control. Zhao Y, Rothkopf CA, Triesch J, Shi B. IEEE Int. Conf. on Development and Learning and Epigenetic Robotics (ICDL), 2012. (Paper of excellence award.)
+http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&arnumber=6400876
+
+[2] Robust active binocular vision through intrinsically motivated learning
+L. Lonini, S. Forestier, C. Teulière, Y. Zhao, B. Shi, J. Triesch, frontiers in Neurorobotics, 2013.
+http://journal.frontiersin.org/article/10.3389/fnbot.2013.00020/full
+
+[3] Self-calibrating smooth pursuit through active efficient coding
+C. Teulière, S. Forestier, L. Lonini, C. Zhang, Y. Zhao, B. Shi, J. Triesch, Robotics and Autonomous Systems, 2014
+http://www.sciencedirect.com/science/article/pii/S0921889014002486
+
+Quote Request:
+
+- specify max lens diameter to avoid eyes bumping
+- look for similar off-the-shelf fisheye lenses (most seem to have lower distortion)
+- design lens to clip image at top and bottom
+- maybe specify max cost and ask for conversation if necessary to meet cost
+- IP ownership
