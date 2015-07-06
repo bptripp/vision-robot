@@ -21,6 +21,9 @@ linearDensity = linearDensity(ind);
 offset = offset(end:-1:1); % distance from fovea centre
 linearDensity = linearDensity(end:-1:1);
 
+% plot Wassle data
+figure
+scatter(offset, linearDensity)
 
 % To be conservative about motion sensitivity and lower optical performance
 % in periphery, we can increase density in the periphery. 
@@ -34,28 +37,47 @@ end
 % Assume 16mm from fovea corresponds to 90 degrees (~full range in nasal 
 % direction from Wassle et al. (1989) and ~full macaque field of view from 
 % Van Essen et al. (1984) Vision Research. 
-angle = offset * pi/2 / 16;
+FOV = 45; % note: this is half the full FOV
+max_e = 16; % mm
+max_a = 90; % degrees
 
 % trapezoidal integration of linear density to find cumulative cells 
-cells = (linearDensity(1:end-1) + linearDensity(2:end)) / 2 .* diff(offset);
+
+ecc = FOV/max_a *max_e;
+[~, idx] = min( abs(offset-ecc) );
+    
+cells = (linearDensity(1:idx-1) + linearDensity(2:idx)) / 2 .* diff(offset(1:idx));
 cumulativeCells = cumsum(cells);
 
-relativeOffset = offset / offset(end);
-relativeCumulativeCells = [0; cumulativeCells] / cumulativeCells(end);
+relativeOffset = offset(1:idx) / offset(idx);
+relativeCumulativeCells = [0; cumulativeCells] / cumulativeCells(idx-1);
+
+angle = offset(1:idx) * FOV*pi/180 / ecc;
+
+% cells = (linearDensity(1:end-1) + linearDensity(2:end)) / 2 .* diff(offset);
+% cumulativeCells = cumsum(cells);
+% 
+% relativeOffset = offset / offset(end);
+% relativeCumulativeCells = [0; cumulativeCells] / cumulativeCells(end);
 
 %%%% figure for lens designer %%%%
 figure
 subplot(1,2,1), hold on
 plot(relativeOffset, relativeCumulativeCells, 'k')
 plot([0 1], [0 1], 'k--')
-xlabel('Fraction of FOV from Centre', 'FontSize', 18)
-ylabel('Fraction of Sensor from Centre', 'FontSize', 18)
-set(gca, 'FontSize', 18)
+legend('Desired','Linear Reference')
+xlabel('Fraction of FOV from Centre')
+ylabel('Fraction of Sensor from Centre')
+title_str = sprintf('%d degree FOV', FOV*2);
+title(title_str);
+% set(gca, 'FontSize', 18)
 subplot(1,2,2)
 plot(relativeOffset, relativeCumulativeCells./relativeOffset*100-100, 'k')
-xlabel('Fraction of FOV from Centre', 'FontSize', 18)
-ylabel('% Distortion', 'FontSize', 18)
-set(gca, 'FontSize', 18)
+xlabel('Fraction of FOV from Centre')
+ylabel('% Distortion')
+title_str = sprintf('%d degree FOV', FOV*2);
+title(title_str);
+% set(gca, 'FontSize', 18)
 set(gcf, 'Position', [440 440 881 358])
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -66,12 +88,12 @@ cameraPixel = (1:sCam2/2)-1/2;
 maxCameraAngle = max(angle);
 cameraAngle = interp1(relativeCumulativeCells, angle, cameraPixel/cameraPixel(end));
 
-% A = imread('/Users/bptripp/code/head/cars.jpg', 'jpg');
-A = imread('/Users/bptripp/code/head/mountains.jpg', 'jpg');
+% A = imread('cars.jpg', 'jpg');
+A = imread('mountains.jpg', 'jpg');
 sIm1 = size(A,1);
 sIm2 = size(A,2);
 imagePixel = (1:sIm2/2)-1/2;
-maxImageAngle = pi/2;
+maxImageAngle = 90*pi/180;
 imageAngle = imagePixel * maxImageAngle / imagePixel(end);
 mappedPixel = interp1(imageAngle, imagePixel, cameraAngle);
 
@@ -101,5 +123,8 @@ remapped = flatA(remapIndices, :);
 remapped = reshape(remapped, sCam1, sCam2, 3);
 
 figure, imshow(A)
+title('Original image')
 figure, imshow(uint8(remapped))
+title_str = sprintf('Lens Distorted Image, %d degree FOV', FOV*2);
+title(title_str) 
 
