@@ -22,13 +22,13 @@ offset = offset(end:-1:1); % distance from fovea centre
 linearDensity = linearDensity(end:-1:1);
 
 % plot Wassle data
-figure
-scatter(offset, linearDensity)
+% figure
+% scatter(offset, linearDensity)
 
 % To be conservative about motion sensitivity and lower optical performance
 % in periphery, we can increase density in the periphery. 
-if 0
-    scaleFactor = 1 + 0.5*offset/max(offset);
+if 1
+    scaleFactor = 1 + 0.3*offset/max(offset);
     linearDensity = linearDensity .* scaleFactor;
 end
 
@@ -72,13 +72,13 @@ title_str = sprintf('%d degree FOV', FOV*2);
 title(title_str);
 % set(gca, 'FontSize', 18)
 subplot(1,2,2)
-plot(relativeOffset, relativeCumulativeCells./relativeOffset*100-100, 'k')
+plot(relativeOffset, relativeCumulativeCells./relativeOffset*100-100, 'kx-')
 xlabel('Fraction of FOV from Centre')
 ylabel('% Distortion')
 title_str = sprintf('%d degree FOV', FOV*2);
 title(title_str);
 % set(gca, 'FontSize', 18)
-set(gcf, 'Position', [440 440 881 358])
+set(gcf, 'Position', [440   541   654   257])
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Plot a similarly warped example figure ... 
